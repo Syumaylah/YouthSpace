@@ -9,10 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,7 +58,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(BgHeader)
             .verticalScroll(rememberScrollState())
     ) {
         Box(
@@ -110,6 +110,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
                 .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 .background(Color.White)
                 .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp)
@@ -136,7 +137,7 @@ fun LoginScreen(
                 onValueChange = onEmailChange,
                 placeholder = { Text("email@kamu.com", color = LabelGray, fontSize = 14.sp) },
                 leadingIcon = {
-                    Icon(Icons.Default.Email, null, tint = LabelGray, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Outlined.Email, null, tint = LabelGray, modifier = Modifier.size(20.dp))
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true,
@@ -154,13 +155,13 @@ fun LoginScreen(
                 onValueChange = onPasswordChange,
                 placeholder = { Text("Min. 8 karakter", color = LabelGray, fontSize = 14.sp) },
                 leadingIcon = {
-                    Icon(Icons.Default.Lock, null, tint = LabelGray, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Outlined.Lock, null, tint = LabelGray, modifier = Modifier.size(20.dp))
                 },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
-                            if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            null, tint = LabelGray, modifier = Modifier.size(16.dp)
+                            if (passwordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                            null, tint = LabelGray, modifier = Modifier.size(20.dp)
                         )
                     }
                 },
@@ -230,7 +231,7 @@ fun LoginScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_google),
                     contentDescription = "Google",
-                    tint = Color.Unspecified,  // penting! biar warna aslinya muncul
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(Modifier.width(8.dp))
