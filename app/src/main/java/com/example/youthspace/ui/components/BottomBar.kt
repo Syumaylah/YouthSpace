@@ -17,7 +17,7 @@ fun BottomBar(
 ) {
 
     val items = listOf(
-        Triple(Screen.Beranda.route, "Beranda", Icons.Outlined.Home),
+        Triple(Screen.Dashboard.route, "Beranda", Icons.Outlined.Home),
         Triple(Screen.Pencarian.route, "Cari", Icons.Outlined.Search),
         Triple(Screen.Bookmark.route, "Bookmark", Icons.Outlined.BookmarkBorder),
         Triple(Screen.Profile.route, "Profil", Icons.Outlined.PersonOutline)
