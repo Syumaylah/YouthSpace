@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.youthspace.app.viewmodel.AuthUiState
+import com.example.youthspace.viewmodel.AuthUiState
 
 private val BgHeader   = Color(0xFF1A5296)
 private val BtnColor   = Color(0xFF1A5296)
