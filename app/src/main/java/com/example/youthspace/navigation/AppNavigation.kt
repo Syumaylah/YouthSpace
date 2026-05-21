@@ -88,14 +88,22 @@ fun MainNavHost(
     val uiState =
         authViewModel.uiState.collectAsStateWithLifecycle()
 
+    val isRegistering =
+        authViewModel.isRegistering.collectAsStateWithLifecycle()
+
     LaunchedEffect(uiState.value) {
 
         if (uiState.value is AuthUiState.Success) {
 
-            navController.navigate(Screen.Dashboard.route) {
-
-                popUpTo(Screen.Login.route) {
-                    inclusive = true
+            if (isRegistering.value) {
+                // Setelah register → ke Login
+                navController.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Register.route) { inclusive = true }
+                }
+            } else {
+                // Setelah login → ke Dashboard
+                navController.navigate(Screen.Dashboard.route) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
                 }
             }
 
