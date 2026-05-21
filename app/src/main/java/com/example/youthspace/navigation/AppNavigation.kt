@@ -16,6 +16,7 @@ import com.example.youthspace.viewmodel.AuthCheckState
 import com.example.youthspace.viewmodel.AuthViewModel
 import com.example.youthspace.ui.view.DashboardScreen
 import com.example.youthspace.ui.view.LoginScreen
+import com.example.youthspace.ui.view.RegisterScreen
 import com.example.youthspace.viewmodel.*
 import com.example.youthspace.ui.view.RegisterScreen
 
