@@ -20,9 +20,8 @@ import com.example.youthspace.viewmodel.Screen
 import com.example.youthspace.ui.view.DashboardScreen
 import com.example.youthspace.ui.view.LoginScreen
 import com.example.youthspace.ui.view.RegisterScreen
-import com.example.youthspace.ui.view.BookmarkScreen
-import com.example.youthspace.ui.view.ProfileScreen
-import com.example.youthspace.ui.view.SearchScreen
+import com.example.youthspace.viewmodel.*
+import com.example.youthspace.ui.view.RegisterScreen
 
 @Composable
 fun AppNavigation(
@@ -116,28 +115,21 @@ fun MainNavHost(
         composable(Screen.Register.route) {
 
             RegisterScreen(
-                firstName = firstName.value,
-                lastName = lastName.value,
-                username = username.value,
-                email = email.value,
-                password = password.value,
-                confirmPassword = confirmPassword.value,
-                uiState = uiState.value,
-
-                onFirstNameChange = authViewModel::onFirstNameChange,
-                onLastNameChange = authViewModel::onLastNameChange,
-                onUsernameChange = authViewModel::onUsernameChange,
-                onEmailChange = authViewModel::onEmailChange,
-                onPasswordChange = authViewModel::onPasswordChange,
+                firstName               = firstName.value,
+                lastName                = lastName.value,
+                username                = username.value,
+                email                   = email.value,
+                password                = password.value,
+                confirmPassword         = confirmPassword.value,
+                uiState                 = uiState.value,
+                onFirstNameChange       = authViewModel::onFirstNameChange,
+                onLastNameChange        = authViewModel::onLastNameChange,
+                onUsernameChange        = authViewModel::onUsernameChange,
+                onEmailChange           = authViewModel::onEmailChange,
+                onPasswordChange        = authViewModel::onPasswordChange,
                 onConfirmPasswordChange = authViewModel::onConfirmPasswordChange,
-
-                onRegisterClick = {
-                    authViewModel.register()
-                },
-
-                onNavigateToLogin = {
-                    navController.popBackStack()
-                }
+                onRegisterClick         = { authViewModel.register() },
+                onNavigateToLogin       = { navController.popBackStack() }
             )
         }
 

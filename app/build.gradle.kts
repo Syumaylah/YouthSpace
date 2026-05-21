@@ -67,7 +67,7 @@ dependencies {
     implementation("io.ktor:ktor-client-android:3.0.3")
 
     implementation("io.coil-kt:coil-compose:2.7.0")
-
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.0")
     testImplementation(libs.junit)
 
     androidTestImplementation(libs.androidx.junit)
