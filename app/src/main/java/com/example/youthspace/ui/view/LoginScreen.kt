@@ -227,7 +227,12 @@ fun LoginScreen(
                 contentPadding = PaddingValues(vertical = 14.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("G", color = Color(0xFF4285F4), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_google),
+                    contentDescription = "Google",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(18.dp)
+                )
                 Spacer(Modifier.width(8.dp))
                 Text("Lanjutkan dengan Google", fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
