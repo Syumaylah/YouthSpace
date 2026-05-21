@@ -18,6 +18,7 @@ import com.example.youthspace.viewmodel.AuthCheckState
 import com.example.youthspace.viewmodel.AuthViewModel
 import com.example.youthspace.ui.*
 import com.example.youthspace.ui.view.LoginScreen
+import com.example.youthspace.ui.view.RegisterScreen
 import com.example.youthspace.viewmodel.*
 
 @Composable
