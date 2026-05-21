@@ -9,15 +9,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class AuthViewModel : ViewModel() {
-
     private val repository = AuthRepository()
-
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
     val uiState: StateFlow<AuthUiState> = _uiState
-
     private val _authCheckState = MutableStateFlow<AuthCheckState>(AuthCheckState.Checking)
     val authCheckState: StateFlow<AuthCheckState> = _authCheckState
-
     private val _email           = MutableStateFlow(""); val email: StateFlow<String>           = _email
     private val _password        = MutableStateFlow(""); val password: StateFlow<String>        = _password
     private val _firstName       = MutableStateFlow(""); val firstName: StateFlow<String>       = _firstName

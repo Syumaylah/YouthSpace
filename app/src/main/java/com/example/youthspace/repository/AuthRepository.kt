@@ -7,7 +7,6 @@ import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.flow.Flow
 
 class AuthRepository {
-
     private val supabase = SupabaseClientProvider.client
 
     val sessionStatus: Flow<SessionStatus> = supabase.auth.sessionStatus

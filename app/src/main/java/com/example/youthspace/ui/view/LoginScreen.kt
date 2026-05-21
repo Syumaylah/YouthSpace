@@ -9,17 +9,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -29,8 +30,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.youthspace.ui.theme.*
 import com.example.youthspace.viewmodel.AuthUiState
+import com.example.youthspace.R
 
 private val BgHeader   = Color(0xFF1A5296)
 private val BtnColor   = Color(0xFF1A5296)
@@ -57,7 +58,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(BgHeader)
             .verticalScroll(rememberScrollState())
     ) {
         Box(
@@ -76,7 +77,12 @@ fun LoginScreen(
                         .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("✦", fontSize = 24.sp, color = Color.White)
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_youthspace_logo),
+                        contentDescription = "Logo",
+                        tint = Color.White,
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
 
                 Spacer(Modifier.height(16.dp))
@@ -104,6 +110,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
                 .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 .background(Color.White)
                 .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp)
@@ -130,7 +137,7 @@ fun LoginScreen(
                 onValueChange = onEmailChange,
                 placeholder = { Text("email@kamu.com", color = LabelGray, fontSize = 14.sp) },
                 leadingIcon = {
-                    Icon(Icons.Default.Email, null, tint = LabelGray, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Outlined.Email, null, tint = LabelGray, modifier = Modifier.size(20.dp))
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true,
@@ -148,13 +155,13 @@ fun LoginScreen(
                 onValueChange = onPasswordChange,
                 placeholder = { Text("Min. 8 karakter", color = LabelGray, fontSize = 14.sp) },
                 leadingIcon = {
-                    Icon(Icons.Default.Lock, null, tint = LabelGray, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Outlined.Lock, null, tint = LabelGray, modifier = Modifier.size(20.dp))
                 },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
-                            if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            null, tint = LabelGray, modifier = Modifier.size(16.dp)
+                            if (passwordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                            null, tint = LabelGray, modifier = Modifier.size(20.dp)
                         )
                     }
                 },
@@ -221,7 +228,12 @@ fun LoginScreen(
                 contentPadding = PaddingValues(vertical = 14.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("G", color = Color(0xFF4285F4), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_google),
+                    contentDescription = "Google",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(18.dp)
+                )
                 Spacer(Modifier.width(8.dp))
                 Text("Lanjutkan dengan Google", fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
