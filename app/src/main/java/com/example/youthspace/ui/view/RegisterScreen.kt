@@ -1,4 +1,4 @@
-package com.youthspace.app.ui.screens
+package com.example.youthspace.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.youthspace.app.viewmodel.AuthUiState
+import com.example.youthspace.R
+import com.example.youthspace.viewmodel.AuthUiState
 
 private val BgHeader   = Color(0xFF1A5296)
 private val BtnColor   = Color(0xFF1A5296)
@@ -81,7 +83,12 @@ fun RegisterScreen(
                         .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("✦", fontSize = 24.sp, color = Color.White)
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_youthspace_logo),
+                        contentDescription = "Logo",
+                        tint = Color.White,
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
                 Spacer(Modifier.height(16.dp))
                 Text(
