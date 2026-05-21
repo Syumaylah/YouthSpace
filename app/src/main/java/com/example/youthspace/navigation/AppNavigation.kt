@@ -14,11 +14,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.youthspace.viewmodel.AuthCheckState
 import com.example.youthspace.viewmodel.AuthViewModel
-import com.example.youthspace.ui.*
 import com.example.youthspace.ui.view.DashboardScreen
 import com.example.youthspace.ui.view.LoginScreen
 import com.example.youthspace.viewmodel.*
-import androidx.navigation.compose.composable
 
 @Composable
 fun AppNavigation(
@@ -33,7 +31,7 @@ fun AppNavigation(
             }
         }
         is AuthCheckState.Authenticated -> {
-            MainNavHost(authViewModel, startDestination = Screen.Beranda.route)
+            MainNavHost(authViewModel, startDestination = Screen.Dashboard.route)
         }
         is AuthCheckState.NotAuthenticated -> {
             MainNavHost(authViewModel, startDestination = Screen.Login.route)
@@ -58,7 +56,7 @@ fun MainNavHost(
 
     LaunchedEffect(uiState.value) {
         if (uiState.value is AuthUiState.Success) {
-            navController.navigate(Screen.Beranda.route) {
+            navController.navigate(Screen.Dashboard.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
             authViewModel.resetState()
@@ -78,12 +76,6 @@ fun MainNavHost(
                 onNavigateToRegister = { navController.navigate(Screen.Register.route) }
             )
         }
-    }
-
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Dashboard.route
-    ) {
 
         composable(Screen.Dashboard.route) {
             DashboardScreen()
