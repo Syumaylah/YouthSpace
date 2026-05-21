@@ -17,6 +17,7 @@ import com.example.youthspace.viewmodel.AuthViewModel
 import com.example.youthspace.ui.view.DashboardScreen
 import com.example.youthspace.ui.view.LoginScreen
 import com.example.youthspace.viewmodel.*
+import com.example.youthspace.ui.view.RegisterScreen
 
 @Composable
 fun AppNavigation(
@@ -74,6 +75,26 @@ fun MainNavHost(
                 onPasswordChange   = authViewModel::onPasswordChange,
                 onLoginClick       = { authViewModel.login() },
                 onNavigateToRegister = { navController.navigate(Screen.Register.route) }
+            )
+        }
+
+        composable(Screen.Register.route) {
+            RegisterScreen(
+                firstName               = firstName.value,
+                lastName                = lastName.value,
+                username                = username.value,
+                email                   = email.value,
+                password                = password.value,
+                confirmPassword         = confirmPassword.value,
+                uiState                 = uiState.value,
+                onFirstNameChange       = authViewModel::onFirstNameChange,
+                onLastNameChange        = authViewModel::onLastNameChange,
+                onUsernameChange        = authViewModel::onUsernameChange,
+                onEmailChange           = authViewModel::onEmailChange,
+                onPasswordChange        = authViewModel::onPasswordChange,
+                onConfirmPasswordChange = authViewModel::onConfirmPasswordChange,
+                onRegisterClick         = { authViewModel.register() },
+                onNavigateToLogin       = { navController.popBackStack() }
             )
         }
 
