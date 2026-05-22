@@ -12,11 +12,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
 import com.example.youthspace.viewmodel.AuthCheckState
 import com.example.youthspace.viewmodel.AuthUiState
 import com.example.youthspace.viewmodel.AuthViewModel
-
 import com.example.youthspace.ui.view.DashboardScreen
 import com.example.youthspace.ui.view.LoginScreen
 import com.example.youthspace.ui.view.RegisterScreen
@@ -96,12 +94,10 @@ fun MainNavHost(
         if (uiState.value is AuthUiState.Success) {
 
             if (isRegistering.value) {
-                // Setelah register → ke Login
                 navController.navigate(Screen.Login.route) {
                     popUpTo(Screen.Register.route) { inclusive = true }
                 }
             } else {
-                // Setelah login → ke Dashboard
                 navController.navigate(Screen.Dashboard.route) {
                     popUpTo(Screen.Login.route) { inclusive = true }
                 }
