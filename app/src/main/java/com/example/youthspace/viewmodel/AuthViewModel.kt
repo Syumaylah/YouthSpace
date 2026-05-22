@@ -21,6 +21,10 @@ class AuthViewModel : ViewModel() {
     private val _username        = MutableStateFlow(""); val username: StateFlow<String>        = _username
     private val _confirmPassword = MutableStateFlow(""); val confirmPassword: StateFlow<String> = _confirmPassword
 
+    // ── Untuk bedain navigasi setelah register vs login ───────────────────────
+    private val _isRegistering = MutableStateFlow(false)
+    val isRegistering: StateFlow<Boolean> = _isRegistering
+
     init { observeAuthStatus() }
 
     private fun observeAuthStatus() {
@@ -46,6 +50,7 @@ class AuthViewModel : ViewModel() {
     fun onConfirmPasswordChange(v: String) { _confirmPassword.value = v }
 
     fun login() {
+        _isRegistering.value = false
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             try {
@@ -58,6 +63,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun register() {
+        _isRegistering.value = true
         if (_password.value != _confirmPassword.value) {
             _uiState.value = AuthUiState.Error("Password dan konfirmasi tidak cocok.")
             return

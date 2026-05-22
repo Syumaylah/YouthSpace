@@ -97,10 +97,12 @@ fun MainNavHost(
         if (uiState.value is AuthUiState.Success) {
 
             if (isRegistering.value) {
+                // Setelah register → ke Login
                 navController.navigate(Screen.Login.route) {
                     popUpTo(Screen.Register.route) { inclusive = true }
                 }
             } else {
+                // Setelah login → ke Dashboard
                 navController.navigate(Screen.Dashboard.route) {
                     popUpTo(Screen.Login.route) { inclusive = true }
                 }
@@ -186,8 +188,33 @@ fun MainNavHost(
                             inclusive = true
                         }
                     }
+
+                onFirstNameChange = authViewModel::onFirstNameChange,
+
+                onLastNameChange = authViewModel::onLastNameChange,
+
+                onUsernameChange = authViewModel::onUsernameChange,
+
+                onEmailChange = authViewModel::onEmailChange,
+
+                onPasswordChange = authViewModel::onPasswordChange,
+
+                onConfirmPasswordChange =
+                    authViewModel::onConfirmPasswordChange,
+
+                onRegisterClick = {
+                    authViewModel.register()
+                },
+
+                onNavigateToLogin = {
+                    navController.popBackStack()
                 }
             )
+        }
+
+        composable(Screen.Dashboard.route) {
+
+            DashboardScreen()
         }
     }
 }
