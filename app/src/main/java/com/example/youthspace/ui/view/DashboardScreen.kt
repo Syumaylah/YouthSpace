@@ -24,10 +24,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.youthspace.navigation.Screen
 import com.example.youthspace.viewmodel.DashboardViewModel
 
 @Composable
 fun DashboardScreen(
+    navController: NavController,
     viewModel: DashboardViewModel = viewModel()
 ) {
 
@@ -101,15 +104,13 @@ fun DashboardScreen(
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = { },
-
+                    onClick = {navController.navigate(Screen.Profile.route) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Person,
                             contentDescription = null
                         )
                     },
-
                     label = {
                         Text("Profile")
                     }
