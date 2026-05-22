@@ -12,26 +12,28 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+
 import com.example.youthspace.viewmodel.AuthCheckState
 import com.example.youthspace.viewmodel.AuthUiState
 import com.example.youthspace.viewmodel.AuthViewModel
-import com.example.youthspace.viewmodel.Screen
 
 import com.example.youthspace.ui.view.DashboardScreen
 import com.example.youthspace.ui.view.LoginScreen
-import com.example.youthspace.ui.view.RegisterScreen
-import com.example.youthspace.viewmodel.*
+import com.example.youthspace.ui.view.ProfileScreen
 import com.example.youthspace.ui.view.RegisterScreen
 
 @Composable
 fun AppNavigation(
     authViewModel: AuthViewModel = viewModel()
 ) {
-    val authCheckState = authViewModel.authCheckState.collectAsStateWithLifecycle()
+
+    val authCheckState =
+        authViewModel.authCheckState.collectAsStateWithLifecycle()
 
     when (authCheckState.value) {
 
         is AuthCheckState.Checking -> {
+
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -41,6 +43,7 @@ fun AppNavigation(
         }
 
         is AuthCheckState.Authenticated -> {
+
             MainNavHost(
                 authViewModel = authViewModel,
                 startDestination = Screen.Dashboard.route
@@ -48,6 +51,7 @@ fun AppNavigation(
         }
 
         is AuthCheckState.NotAuthenticated -> {
+
             MainNavHost(
                 authViewModel = authViewModel,
                 startDestination = Screen.Login.route
@@ -64,22 +68,41 @@ fun MainNavHost(
 
     val navController = rememberNavController()
 
-    val email = authViewModel.email.collectAsStateWithLifecycle()
-    val password = authViewModel.password.collectAsStateWithLifecycle()
-    val firstName = authViewModel.firstName.collectAsStateWithLifecycle()
-    val lastName = authViewModel.lastName.collectAsStateWithLifecycle()
-    val username = authViewModel.username.collectAsStateWithLifecycle()
-    val confirmPassword = authViewModel.confirmPassword.collectAsStateWithLifecycle()
-    val uiState = authViewModel.uiState.collectAsStateWithLifecycle()
+    val email =
+        authViewModel.email.collectAsStateWithLifecycle()
+
+    val password =
+        authViewModel.password.collectAsStateWithLifecycle()
+
+    val firstName =
+        authViewModel.firstName.collectAsStateWithLifecycle()
+
+    val lastName =
+        authViewModel.lastName.collectAsStateWithLifecycle()
+
+    val username =
+        authViewModel.username.collectAsStateWithLifecycle()
+
+    val confirmPassword =
+        authViewModel.confirmPassword.collectAsStateWithLifecycle()
+
+    val uiState =
+        authViewModel.uiState.collectAsStateWithLifecycle()
+
+    val isRegistering =
+        authViewModel.isRegistering.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.value) {
 
         if (uiState.value is AuthUiState.Success) {
 
-            navController.navigate(Screen.Dashboard.route) {
-
-                popUpTo(Screen.Login.route) {
-                    inclusive = true
+            if (isRegistering.value) {
+                navController.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Register.route) { inclusive = true }
+                }
+            } else {
+                navController.navigate(Screen.Dashboard.route) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
                 }
             }
 
@@ -100,6 +123,7 @@ fun MainNavHost(
                 uiState = uiState.value,
 
                 onEmailChange = authViewModel::onEmailChange,
+
                 onPasswordChange = authViewModel::onPasswordChange,
 
                 onLoginClick = {
@@ -115,56 +139,49 @@ fun MainNavHost(
         composable(Screen.Register.route) {
 
             RegisterScreen(
-                firstName               = firstName.value,
-                lastName                = lastName.value,
-                username                = username.value,
-                email                   = email.value,
-                password                = password.value,
-                confirmPassword         = confirmPassword.value,
-                uiState                 = uiState.value,
-                onFirstNameChange       = authViewModel::onFirstNameChange,
-                onLastNameChange        = authViewModel::onLastNameChange,
-                onUsernameChange        = authViewModel::onUsernameChange,
-                onEmailChange           = authViewModel::onEmailChange,
-                onPasswordChange        = authViewModel::onPasswordChange,
-                onConfirmPasswordChange = authViewModel::onConfirmPasswordChange,
-                onRegisterClick         = { authViewModel.register() },
-                onNavigateToLogin       = { navController.popBackStack() }
+                firstName = firstName.value,
+                lastName = lastName.value,
+                username = username.value,
+                email = email.value,
+                password = password.value,
+                confirmPassword = confirmPassword.value,
+                uiState = uiState.value,
+
+                onFirstNameChange = authViewModel::onFirstNameChange,
+
+                onLastNameChange = authViewModel::onLastNameChange,
+
+                onUsernameChange = authViewModel::onUsernameChange,
+
+                onEmailChange = authViewModel::onEmailChange,
+
+                onPasswordChange = authViewModel::onPasswordChange,
+
+                onConfirmPasswordChange =
+                    authViewModel::onConfirmPasswordChange,
+
+                onRegisterClick = {
+                    authViewModel.register()
+                },
+
+                onNavigateToLogin = {
+                    navController.popBackStack()
+                }
             )
         }
 
         composable(Screen.Dashboard.route) {
 
-            DashboardScreen(
-                navController = navController
-            )
-        }
-
-        composable(Screen.Search.route) {
-
-            SearchScreen(
-                navController = navController
-            )
-        }
-
-        composable(Screen.Bookmark.route) {
-
-            BookmarkScreen(
-                navController = navController
-            )
+            DashboardScreen()
         }
 
         composable(Screen.Profile.route) {
 
             ProfileScreen(
                 navController = navController,
-
                 onLogoutClick = {
-
                     authViewModel.logout()
-
                     navController.navigate(Screen.Login.route) {
-
                         popUpTo(Screen.Dashboard.route) {
                             inclusive = true
                         }
