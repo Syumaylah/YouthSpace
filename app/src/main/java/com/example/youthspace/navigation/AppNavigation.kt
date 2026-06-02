@@ -19,6 +19,7 @@ import com.example.youthspace.ui.view.DashboardScreen
 import com.example.youthspace.ui.view.LoginScreen
 import com.example.youthspace.ui.view.ProfileScreen
 import com.example.youthspace.ui.view.RegisterScreen
+import com.example.youthspace.ui.view.DetailArtikelScreen
 
 @Composable
 fun AppNavigation(
@@ -127,6 +128,19 @@ fun MainNavHost(
 
         composable(Screen.Dashboard.route) {
             DashboardScreen(navController = navController)
+        }
+
+        composable(
+            route = Screen.DetailArtikel.route
+        ) {
+
+            val artikelId =
+                it.arguments?.getString("artikelId") ?: ""
+
+            DetailArtikelScreen(
+                artikelId = artikelId,
+                navController = navController
+            )
         }
 
         composable(Screen.Profile.route) {

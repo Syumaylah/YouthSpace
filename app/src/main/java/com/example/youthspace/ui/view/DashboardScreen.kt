@@ -36,6 +36,8 @@ fun DashboardScreen(
 
     val articles = viewModel.articles.value
 
+    val featuredArticle = articles.firstOrNull()
+
     val categories = listOf(
         "Pengembangan Diri",
         "Edukasi",
@@ -281,15 +283,65 @@ fun DashboardScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Box(
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(120.dp)
-                                .clip(RoundedCornerShape(18.dp))
-                                .background(Color(0xFF0E4C92))
-                        )
+                                .height(170.dp)
+                                .clickable {
 
-                        Spacer(modifier = Modifier.height(28.dp))
+                                    featuredArticle?.let {
+                                        navController.navigate(
+                                            Screen.DetailArtikel.createRoute(it.id)
+                                        )
+                                    }
+                                },
+
+                            shape = RoundedCornerShape(18.dp),
+
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFF0E4C92)
+                            )
+                        ) {
+
+                            featuredArticle?.let { article ->
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(20.dp),
+
+                                    verticalArrangement = Arrangement.SpaceBetween
+                                ) {
+
+                                    Text(
+                                        text = "ARTIKEL PILIHAN",
+                                        color = Color.White.copy(alpha = 0.7f),
+                                        fontSize = 12.sp
+                                    )
+
+                                    Column {
+
+                                        Text(
+                                            text = article.judul,
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 22.sp,
+                                            lineHeight = 28.sp
+                                        )
+
+                                        Spacer(
+                                            modifier = Modifier.height(8.dp)
+                                        )
+
+                                        Text(
+                                            text = article.kategori_id,
+                                            color = Color.White.copy(alpha = 0.8f),
+                                            fontSize = 14.sp
+                                        )
+                                    }
+                                }
+                            }
+                        }
 
                         // TERBARU
                         Row(
@@ -319,13 +371,15 @@ fun DashboardScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 8.dp),
+                            .padding(horizontal = 20.dp, vertical = 8.dp)
+                            .clickable {
 
-                        shape = RoundedCornerShape(20.dp),
-
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White
-                        )
+                                navController.navigate(
+                                    Screen.DetailArtikel.createRoute(
+                                        article.id
+                                    )
+                                )
+                            }
                     ) {
 
                         Row(
