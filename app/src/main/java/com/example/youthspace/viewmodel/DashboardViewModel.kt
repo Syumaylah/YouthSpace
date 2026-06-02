@@ -2,14 +2,16 @@ package com.example.youthspace.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.youthspace.data.Article
-import com.example.youthspace.repository.DashboardRepository
+import com.example.youthspace.repository.ArticleRepository
+import kotlinx.coroutines.launch
 
 class DashboardViewModel : ViewModel() {
 
-    private val repository = DashboardRepository()
+    private val repository = ArticleRepository()
 
-    var articles = mutableStateOf(listOf<Article>())
+    var articles = mutableStateOf<List<Article>>(emptyList())
         private set
 
     init {
@@ -17,6 +19,18 @@ class DashboardViewModel : ViewModel() {
     }
 
     private fun loadArticles() {
-        articles.value = repository.getArticles()
+
+        viewModelScope.launch {
+
+            try {
+
+                articles.value =
+                    repository.getArticles()
+
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+            }
+        }
     }
 }

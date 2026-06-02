@@ -20,6 +20,7 @@ import com.example.youthspace.ui.view.LoginScreen
 import com.example.youthspace.ui.view.ProfileScreen
 import com.example.youthspace.ui.view.RegisterScreen
 import com.example.youthspace.ui.view.DetailArtikelScreen
+import com.example.youthspace.ui.view.BookmarkScreen
 
 @Composable
 fun AppNavigation(
@@ -139,6 +140,12 @@ fun MainNavHost(
 
             DetailArtikelScreen(
                 artikelId = artikelId,
+                navController = navController
+            )
+        }
+        composable(Screen.Bookmark.route) {
+
+            BookmarkScreen(
                 navController = navController
             )
         }

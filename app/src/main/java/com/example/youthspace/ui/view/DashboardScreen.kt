@@ -90,7 +90,11 @@ fun DashboardScreen(
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = { },
+                    onClick = {
+                        navController.navigate(
+                            Screen.Bookmark.route
+                        )
+                    },
 
                     icon = {
                         Icon(

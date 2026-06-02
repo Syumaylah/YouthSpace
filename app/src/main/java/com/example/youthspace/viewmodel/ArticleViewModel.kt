@@ -3,11 +3,11 @@ package com.example.youthspace.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.youthspace.data.Article
-import com.example.youthspace.repository.ArtikelRepository
+import com.example.youthspace.repository.ArticleRepository
 
 class ArticleViewModel : ViewModel() {
 
-    private val repository = ArtikelRepository()
+    private val repository = ArticleRepository()
 
     var articles = mutableStateOf<List<Article>>(emptyList())
         private set
