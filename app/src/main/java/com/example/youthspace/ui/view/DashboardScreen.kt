@@ -27,25 +27,36 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.youthspace.navigation.Screen
 import com.example.youthspace.viewmodel.DashboardViewModel
+import com.example.youthspace.viewmodel.ProfileViewModel
+import java.util.Calendar
 
 @Composable
 fun DashboardScreen(
     navController: NavController,
-    viewModel: DashboardViewModel = viewModel()
+    viewModel: DashboardViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = viewModel()
 ) {
 
     val articles = viewModel.articles.value
+    val allArticles = viewModel.allArticles.value
+    val categories = viewModel.categories.value
+    val selectedCategoryIndex = viewModel.selectedCategoryIndex.value
+    val showAll = viewModel.showAll.value
+    val isLoading = viewModel.isLoading.value
 
-    val featuredArticle = articles.firstOrNull()
+    val featuredArticle = allArticles.firstOrNull()
 
-    val categories = listOf(
-        "Pengembangan Diri",
-        "Edukasi",
-        "Psikologi"
-    )
+    val currentUser = profileViewModel.currentUser.value
+    val userName = currentUser?.name ?: "Pengguna"
 
-    var selectedCategory by remember {
-        mutableStateOf(0)
+    val greeting = remember {
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        when {
+            hour < 12 -> "Selamat pagi,"
+            hour < 15 -> "Selamat siang,"
+            hour < 18 -> "Selamat sore,"
+            else      -> "Selamat malam,"
+        }
     }
 
     Scaffold(
@@ -183,7 +194,7 @@ fun DashboardScreen(
                     ) {
 
                         Text(
-                            text = "Selamat pagi,",
+                            text = greeting,
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
@@ -191,7 +202,7 @@ fun DashboardScreen(
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Text(
-                            text = "Reza Pratama",
+                            text = userName,
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp
                         )
@@ -238,40 +249,94 @@ fun DashboardScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        LazyRow {
+                        if (isLoading && categories.isEmpty()) {
+                            // Skeleton loading placeholder
+                            Row {
+                                repeat(3) {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(end = 12.dp)
+                                            .clip(RoundedCornerShape(30.dp))
+                                            .background(Color(0xFFE9EDF5))
+                                            .padding(horizontal = 22.dp, vertical = 12.dp)
+                                    ) {
+                                        Text(
+                                            text = "         ",
+                                            fontSize = 14.sp
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            LazyRow {
 
-                            itemsIndexed(categories) { index, item ->
-
-                                val selected = selectedCategory == index
-
-                                Box(
-                                    modifier = Modifier
-                                        .padding(end = 12.dp)
-                                        .clip(RoundedCornerShape(30.dp))
-                                        .background(
-                                            if (selected)
-                                                Color(0xFF0E4C92)
+                                // Chip "Semua"
+                                item {
+                                    val selected = selectedCategoryIndex == -1
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(end = 12.dp)
+                                            .clip(RoundedCornerShape(30.dp))
+                                            .background(
+                                                if (selected)
+                                                    Color(0xFF0E4C92)
+                                                else
+                                                    Color(0xFFE9EDF5)
+                                            )
+                                            .clickable {
+                                                viewModel.selectCategory(-1)
+                                            }
+                                            .padding(
+                                                horizontal = 22.dp,
+                                                vertical = 12.dp
+                                            )
+                                    ) {
+                                        Text(
+                                            text = "Semua",
+                                            color = if (selected)
+                                                Color.White
                                             else
-                                                Color(0xFFE9EDF5)
+                                                Color.Gray,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium
                                         )
-                                        .clickable {
-                                            selectedCategory = index
-                                        }
-                                        .padding(
-                                            horizontal = 22.dp,
-                                            vertical = 12.dp
-                                        )
-                                ) {
+                                    }
+                                }
 
-                                    Text(
-                                        text = item,
-                                        color = if (selected)
-                                            Color.White
-                                        else
-                                            Color.Gray,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
+                                // Chip per kategori dari DB
+                                itemsIndexed(categories) { index, category ->
+
+                                    val selected = selectedCategoryIndex == index
+
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(end = 12.dp)
+                                            .clip(RoundedCornerShape(30.dp))
+                                            .background(
+                                                if (selected)
+                                                    Color(0xFF0E4C92)
+                                                else
+                                                    Color(0xFFE9EDF5)
+                                            )
+                                            .clickable {
+                                                viewModel.selectCategory(index)
+                                            }
+                                            .padding(
+                                                horizontal = 22.dp,
+                                                vertical = 12.dp
+                                            )
+                                    ) {
+
+                                        Text(
+                                            text = category.name,
+                                            color = if (selected)
+                                                Color.White
+                                            else
+                                                Color.Gray,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -338,31 +403,47 @@ fun DashboardScreen(
                                         )
 
                                         Text(
-                                            text = article.kategori_id,
+                                            text = article.kategori?.name ?: "",
                                             color = Color.White.copy(alpha = 0.8f),
                                             fontSize = 14.sp
                                         )
                                     }
                                 }
                             }
+
+                            // Jika belum ada artikel, tampilkan placeholder
+                            if (featuredArticle == null && isLoading) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(color = Color.White)
+                                }
+                            }
                         }
 
-                        // TERBARU
+                        Spacer(modifier = Modifier.height(28.dp))
+
+                        // HEADER TERBARU / LIHAT SEMUA
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
 
                             Text(
-                                text = "Terbaru",
+                                text = if (showAll) "Semua Artikel" else "Terbaru",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 22.sp
                             )
 
                             Text(
-                                text = "Lihat Semua",
+                                text = if (showAll) "Sembunyikan" else "Lihat Semua",
                                 color = Color(0xFF1E5AA8),
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.clickable {
+                                    viewModel.toggleShowAll()
+                                }
                             )
                         }
 
@@ -370,80 +451,108 @@ fun DashboardScreen(
                     }
                 }
 
-                items(articles) { article ->
+                if (isLoading && articles.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = Color(0xFF0E4C92))
+                        }
+                    }
+                } else if (articles.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Tidak ada artikel di kategori ini.",
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                } else {
+                    items(articles) { article ->
 
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 8.dp)
-                            .clickable {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp, vertical = 8.dp)
+                                .clickable {
 
-                                navController.navigate(
-                                    Screen.DetailArtikel.createRoute(
-                                        article.id
+                                    navController.navigate(
+                                        Screen.DetailArtikel.createRoute(
+                                            article.id
+                                        )
                                     )
-                                )
-                            }
-                    ) {
-
-                        Row(
-                            modifier = Modifier.padding(16.dp)
+                                }
                         ) {
 
-                            // ICON BOX
-                            Box(
-                                modifier = Modifier
-                                    .size(70.dp)
-                                    .clip(RoundedCornerShape(14.dp))
-                                    .background(Color(0xFFE8EDFF)),
-                                contentAlignment = Alignment.Center
+                            Row(
+                                modifier = Modifier.padding(16.dp)
                             ) {
 
-                                Text(
-                                    text = "✦",
-                                    fontSize = 26.sp,
-                                    color = Color(0xFF1E5AA8)
-                                )
-                            }
+                                // ICON BOX (placeholder jika image_url null)
+                                Box(
+                                    modifier = Modifier
+                                        .size(70.dp)
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(Color(0xFFE8EDFF)),
+                                    contentAlignment = Alignment.Center
+                                ) {
 
-                            Spacer(modifier = Modifier.width(16.dp))
+                                    Text(
+                                        text = "✦",
+                                        fontSize = 26.sp,
+                                        color = Color(0xFF1E5AA8)
+                                    )
+                                }
 
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
+                                Spacer(modifier = Modifier.width(16.dp))
 
-                                Text(
-                                    text = article.kategori_id.uppercase(),
-                                    color = Color(0xFFC98A21),
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp
-                                )
+                                Column(
+                                    modifier = Modifier.weight(1f)
+                                ) {
 
-                                Spacer(modifier = Modifier.height(6.dp))
+                                    Text(
+                                        text = (article.kategori?.name ?: "").uppercase(),
+                                        color = Color(0xFFC98A21),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp
+                                    )
 
-                                Text(
-                                    text = article.judul,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 18.sp,
-                                    lineHeight = 24.sp
-                                )
+                                    Spacer(modifier = Modifier.height(6.dp))
 
-                                Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = article.judul,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 18.sp,
+                                        lineHeight = 24.sp
+                                    )
 
-                                Text(
-                                    text = "8 menit baca",
-                                    color = Color.Gray,
-                                    fontSize = 13.sp
-                                )
-                            }
+                                    Spacer(modifier = Modifier.height(8.dp))
 
-                            IconButton(onClick = {}) {
+                                    Text(
+                                        text = "8 menit baca",
+                                        color = Color.Gray,
+                                        fontSize = 13.sp
+                                    )
+                                }
 
-                                Icon(
-                                    imageVector = Icons.Outlined.BookmarkBorder,
-                                    contentDescription = null,
-                                    tint = Color.Gray
-                                )
+                                IconButton(onClick = {}) {
+
+                                    Icon(
+                                        imageVector = Icons.Outlined.BookmarkBorder,
+                                        contentDescription = null,
+                                        tint = Color.Gray
+                                    )
+                                }
                             }
                         }
                     }

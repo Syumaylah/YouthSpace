@@ -1,33 +1,38 @@
 package com.example.youthspace.repository
 
-import com.example.youthspace.data.Article
+import com.example.youthspace.data.Artikel
+import com.example.youthspace.data.Category
+import com.example.youthspace.data.SupabaseClientProvider
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
 
 class ArticleRepository {
 
-    fun getArticles(): List<Article> {
+    private val client = SupabaseClientProvider.client
 
-        return listOf(
+    suspend fun getArticles(): List<Artikel> {
+        return client.postgrest["artikel"]
+            .select(columns = Columns.raw("*, categories!fk_kategori(id, name)")) {
+                order("created_at", Order.DESCENDING)
+            }
+            .decodeList<Artikel>()
+    }
 
-            Article(
-                id = "1",
-                judul = "Mengelola Kecemasan di Era Digital",
-                isi = "Belajar mengelola kecemasan di era digital.",
-                kategori_id = "Psikologi"
-            ),
+    suspend fun getCategories(): List<Category> {
+        return client.postgrest["categories"]
+            .select()
+            .decodeList<Category>()
+    }
 
-            Article(
-                id = "2",
-                judul = "5 Kebiasaan Remaja yang Mengubah Hidup",
-                isi = "Kebiasaan kecil yang berdampak besar.",
-                kategori_id = "Pengembangan Diri"
-            ),
-
-            Article(
-                id = "3",
-                judul = "Persiapan Karier Sejak Bangku Kuliah",
-                isi = "Mulai membangun karier sejak dini.",
-                kategori_id = "Karier"
-            )
-        )
+    suspend fun getArticlesByCategory(categoryId: String): List<Artikel> {
+        return client.postgrest["artikel"]
+            .select(columns = Columns.raw("*, categories!fk_kategori(id, name)")) {
+                filter {
+                    eq("kategori_id", categoryId)
+                }
+                order("created_at", Order.DESCENDING)
+            }
+            .decodeList<Artikel>()
     }
 }

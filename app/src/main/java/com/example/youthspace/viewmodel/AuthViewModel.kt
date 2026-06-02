@@ -21,7 +21,6 @@ class AuthViewModel : ViewModel() {
     private val _username        = MutableStateFlow(""); val username: StateFlow<String>        = _username
     private val _confirmPassword = MutableStateFlow(""); val confirmPassword: StateFlow<String> = _confirmPassword
 
-    // ── Untuk bedain navigasi setelah register vs login ───────────────────────
     private val _isRegistering = MutableStateFlow(false)
     val isRegistering: StateFlow<Boolean> = _isRegistering
 
@@ -75,7 +74,8 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             try {
-                repository.register(_email.value.trim(), _password.value)
+                val fullName = "${_firstName.value.trim()} ${_lastName.value.trim()}".trim()
+                repository.register(_email.value.trim(), _password.value, fullName)
                 _uiState.value = AuthUiState.Success
             } catch (e: Exception) {
                 _uiState.value = AuthUiState.Error(e.message ?: "Registrasi gagal.")

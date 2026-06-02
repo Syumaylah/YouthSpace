@@ -4,6 +4,7 @@ import com.example.youthspace.data.SupabaseClientProvider
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionStatus
+import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.flow.Flow
 
 class AuthRepository {
@@ -11,11 +12,19 @@ class AuthRepository {
 
     val sessionStatus: Flow<SessionStatus> = supabase.auth.sessionStatus
 
-    suspend fun register(email: String, password: String) {
+    suspend fun register(email: String, password: String, name: String) {
         supabase.auth.signUpWith(Email) {
             this.email    = email
             this.password = password
         }
+        val userId = supabase.auth.currentUserOrNull()?.id ?: return
+        supabase.postgrest["users"].insert(
+            mapOf(
+                "id"    to userId,
+                "name"  to name,
+                "email" to email
+            )
+        )
     }
 
     suspend fun login(email: String, password: String) {
