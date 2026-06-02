@@ -32,6 +32,7 @@ data class Artikel(
     val createdAt: String?  = null,
     @SerialName("image_url")
     val imageUrl: String?   = null,
+    @SerialName("categories")
     val kategori: Category? = null
 )
 

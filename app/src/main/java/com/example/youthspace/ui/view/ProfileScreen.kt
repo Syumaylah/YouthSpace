@@ -37,8 +37,9 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     authViewModel: AuthViewModel = viewModel()
 ) {
-    val userName  = authViewModel.currentUserEmail()?.substringBefore("@") ?: "Pengguna"
-    val userEmail = authViewModel.currentUserEmail() ?: ""
+    val currentUser = profileViewModel.currentUser.value
+    val userName  = currentUser?.name ?: "Pengguna"
+    val userEmail = currentUser?.email ?: authViewModel.currentUserEmail() ?: ""
 
     Scaffold(
         bottomBar = {
