@@ -13,18 +13,28 @@ class AuthRepository {
     val sessionStatus: Flow<SessionStatus> = supabase.auth.sessionStatus
 
     suspend fun register(email: String, password: String, name: String) {
-        supabase.auth.signUpWith(Email) {
+        val result = supabase.auth.signUpWith(Email) {
             this.email    = email
             this.password = password
         }
-        val userId = supabase.auth.currentUserOrNull()?.id ?: return
-        supabase.postgrest["users"].insert(
-            mapOf(
-                "id"    to userId,
-                "name"  to name,
-                "email" to email
+        val userId = result?.id ?: supabase.auth.currentUserOrNull()?.id
+        android.util.Log.d("AUTH", "userId after signup: $userId")
+        if (userId == null) {
+            android.util.Log.d("AUTH", "userId null, skip insert")
+            return
+        }
+        try {
+            supabase.postgrest["users"].insert(
+                mapOf(
+                    "id"    to userId,
+                    "name"  to name,
+                    "email" to email
+                )
             )
-        )
+            android.util.Log.d("AUTH", "insert berhasil")
+        } catch (e: Exception) {
+            android.util.Log.e("AUTH", "insert gagal: ${e.message}")
+        }
     }
 
     suspend fun login(email: String, password: String) {

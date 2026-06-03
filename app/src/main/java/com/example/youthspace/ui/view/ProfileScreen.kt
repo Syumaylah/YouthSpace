@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.youthspace.viewmodel.AuthViewModel
 import com.example.youthspace.viewmodel.ProfileViewModel
+import androidx.compose.runtime.LaunchedEffect
 
 private val ProfileBlue  = Color(0xFF1A3A63)
 private val SlateText    = Color(0xFF64748B)
@@ -40,6 +41,10 @@ fun ProfileScreen(
     val currentUser = profileViewModel.currentUser.value
     val userName  = currentUser?.name ?: "Pengguna"
     val userEmail = currentUser?.email ?: authViewModel.currentUserEmail() ?: ""
+
+    LaunchedEffect(Unit) {
+        profileViewModel.loadUser()
+    }
 
     Scaffold(
         bottomBar = {

@@ -8,7 +8,7 @@ data class User(
     val id: String       = "",
     val name: String     = "",
     val email: String    = "",
-    val password: String = "",
+    val password: String? = null,
     @SerialName("photo_url")
     val photoUrl: String? = null,
     @SerialName("created_at")
