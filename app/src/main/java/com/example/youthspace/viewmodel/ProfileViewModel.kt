@@ -18,7 +18,7 @@ class ProfileViewModel : ViewModel() {
         loadUser()
     }
 
-    private fun loadUser() {
+    fun loadUser() {
         viewModelScope.launch {
             try {
                 currentUser.value = repository.getCurrentUser()
@@ -26,5 +26,4 @@ class ProfileViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
-    }
-}
+    }}

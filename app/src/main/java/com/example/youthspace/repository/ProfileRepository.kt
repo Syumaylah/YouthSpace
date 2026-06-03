@@ -18,15 +18,17 @@ class ProfileRepository {
     }
 
     suspend fun getCurrentUser(): User? {
+        client.auth.awaitInitialization()
         val userId = getCurrentUserId()
+        android.util.Log.d("PROFILE", "userId: $userId")
         if (userId.isEmpty()) return null
-        return client.postgrest["users"]
+        val result = client.postgrest["users"]
             .select {
-                filter {
-                    eq("id", userId)
-                }
+                filter { eq("id", userId) }
             }
             .decodeList<User>()
             .firstOrNull()
+        android.util.Log.d("PROFILE", "user found: $result")
+        return result
     }
 }

@@ -29,12 +29,16 @@ import com.example.youthspace.navigation.Screen
 import com.example.youthspace.viewmodel.DashboardViewModel
 import com.example.youthspace.viewmodel.ProfileViewModel
 import java.util.Calendar
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.icons.filled.Bookmark
+import com.example.youthspace.viewmodel.BookmarkViewModel
 
 @Composable
 fun DashboardScreen(
     navController: NavController,
     viewModel: DashboardViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = viewModel()
+    profileViewModel: ProfileViewModel = viewModel(),
+    bookmarkViewModel: BookmarkViewModel = viewModel()
 ) {
 
     val articles = viewModel.articles.value
@@ -57,6 +61,15 @@ fun DashboardScreen(
             hour < 18 -> "Selamat sore,"
             else      -> "Selamat malam,"
         }
+    }
+
+    val bookmarkedIds = bookmarkViewModel.bookmarkedIds.value
+    LaunchedEffect(Unit) {
+        profileViewModel.loadUser()
+        bookmarkViewModel.loadBookmarks()
+    }
+    LaunchedEffect(Unit) {
+        profileViewModel.loadUser()
     }
 
     Scaffold(
@@ -545,12 +558,18 @@ fun DashboardScreen(
                                     )
                                 }
 
-                                IconButton(onClick = {}) {
+                                val isBookmarked = bookmarkedIds.contains(article.id)
 
+                                IconButton(onClick = {
+                                    bookmarkViewModel.toggleBookmark(article.id)
+                                }) {
                                     Icon(
-                                        imageVector = Icons.Outlined.BookmarkBorder,
+                                        imageVector = if (isBookmarked)
+                                            Icons.Filled.Bookmark
+                                        else
+                                            Icons.Outlined.BookmarkBorder,
                                         contentDescription = null,
-                                        tint = Color.Gray
+                                        tint = if (isBookmarked) Color(0xFF1E5AA8) else Color.Gray
                                     )
                                 }
                             }
