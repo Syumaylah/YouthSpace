@@ -98,7 +98,7 @@ fun DashboardScreen(
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = { },
+                    onClick = { navController.navigate(Screen.Pencarian.route) },
 
                     icon = {
                         Icon(

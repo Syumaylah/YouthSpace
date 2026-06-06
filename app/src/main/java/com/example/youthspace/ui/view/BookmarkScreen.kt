@@ -45,7 +45,7 @@ fun BookmarkScreen(
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = { },
+                    onClick = { navController.navigate(Screen.Pencarian.route) },
                     icon = { Icon(Icons.Outlined.Search, contentDescription = null) },
                     label = { Text("Search") }
                 )
