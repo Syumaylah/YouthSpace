@@ -18,6 +18,7 @@ import com.example.youthspace.viewmodel.AuthViewModel
 import com.example.youthspace.ui.view.DashboardScreen
 import com.example.youthspace.ui.view.LoginScreen
 import com.example.youthspace.ui.view.ProfileScreen
+import com.example.youthspace.ui.view.EditProfileScreen
 import com.example.youthspace.ui.view.RegisterScreen
 import com.example.youthspace.ui.view.SearchScreen
 import com.example.youthspace.ui.view.DetailArtikelScreen
@@ -173,6 +174,12 @@ fun MainNavHost(
                         }
                     }
                 }
+            )
+        }
+
+        composable(Screen.EditProfile.route) {
+            EditProfileScreen(
+                navController = navController
             )
         }
     }

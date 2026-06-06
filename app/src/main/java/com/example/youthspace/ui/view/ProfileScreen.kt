@@ -10,20 +10,24 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.example.youthspace.navigation.Screen
+import com.example.youthspace.ui.components.BottomBar
 import com.example.youthspace.viewmodel.AuthViewModel
 import com.example.youthspace.viewmodel.ProfileViewModel
-import androidx.compose.runtime.LaunchedEffect
 
 private val ProfileBlue  = Color(0xFF1A3A63)
 private val SlateText    = Color(0xFF64748B)
@@ -38,9 +42,13 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     authViewModel: AuthViewModel = viewModel()
 ) {
-    val currentUser = profileViewModel.currentUser.value
-    val userName  = currentUser?.name ?: "Pengguna"
-    val userEmail = currentUser?.email ?: authViewModel.currentUserEmail() ?: ""
+    val currentUser by profileViewModel.currentUser.collectAsStateWithLifecycle()
+
+    val userName  = currentUser?.name?.takeIf { it.isNotBlank() } ?: "Pengguna"
+    val userEmail = currentUser?.email
+        ?: authViewModel.currentUserEmail()
+        ?: ""
+    val photoUrl  = currentUser?.photoUrl
 
     LaunchedEffect(Unit) {
         profileViewModel.loadUser()
@@ -48,7 +56,7 @@ fun ProfileScreen(
 
     Scaffold(
         bottomBar = {
-            com.example.youthspace.ui.components.BottomBar(navController = navController)
+            BottomBar(navController = navController)
         }
     ) { innerPadding ->
         Column(
@@ -59,7 +67,6 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState())
         ) {
 
-            // HEADER
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -68,23 +75,34 @@ fun ProfileScreen(
             ) {
                 Spacer(Modifier.height(32.dp))
 
-                // Avatar
                 Box(
                     modifier = Modifier
-                        .size(80.dp)
+                        .size(90.dp)
                         .clip(CircleShape)
-                        .background(ProfileBlue),
+                        .background(ProfileBlue)
+                        .border(3.dp, Color.White, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = userName.first().uppercase(),
-                        color = Color.White,
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (!photoUrl.isNullOrBlank()) {
+                        AsyncImage(
+                            model = photoUrl,
+                            contentDescription = "Foto Profil",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                        )
+                    } else {
+                        Text(
+                            text = userName.first().uppercase(),
+                            color = Color.White,
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(14.dp))
 
                 Text(
                     text = userName,
@@ -92,6 +110,7 @@ fun ProfileScreen(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
+                Spacer(Modifier.height(4.dp))
                 Text(
                     text = userEmail,
                     color = SlateText,
@@ -103,59 +122,64 @@ fun ProfileScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            //SECTION AKUN
             ProfileSection(title = "AKUN") {
+
                 ProfileMenuItem(
                     icon      = Icons.Default.Person,
                     iconBg    = Color(0xFFEFF6FF),
                     iconColor = ProfileBlue,
                     title     = "Edit Profil",
                     subtitle  = "Ubah nama dan foto profil",
-                    onClick   = {}
+                    onClick   = {
+                        navController.navigate(Screen.EditProfile.route)
+                    }
                 )
+
                 HorizontalDivider(
                     color = Color(0xFFF1F5F9),
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
+
                 ProfileMenuItem(
                     icon      = Icons.Default.Lock,
                     iconBg    = Color(0xFFFAF5FF),
                     iconColor = Color(0xFF7C3AED),
                     title     = "Ubah Password",
                     subtitle  = "Keamanan akun",
-                    onClick   = {}
+                    onClick   = { /* TODO: navigasi ke UbahPassword screen */ }
                 )
             }
 
             Spacer(Modifier.height(12.dp))
 
-            //SECTION PREFERENSI
             ProfileSection(title = "PREFERENSI") {
+
                 ProfileMenuItem(
                     icon      = Icons.Default.Notifications,
                     iconBg    = Color(0xFFFFF7ED),
                     iconColor = Color(0xFFEA580C),
                     title     = "Notifikasi",
                     subtitle  = "Artikel baru & rekomendasi",
-                    onClick   = {}
+                    onClick   = { /* TODO */ }
                 )
+
                 HorizontalDivider(
                     color = Color(0xFFF1F5F9),
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
+
                 ProfileMenuItem(
                     icon      = Icons.Default.Info,
                     iconBg    = Color(0xFFF0FDF4),
                     iconColor = Color(0xFF16A34A),
                     title     = "Tentang YouthSpace",
                     subtitle  = "Versi 1.0.0",
-                    onClick   = {}
+                    onClick   = { /* TODO */ }
                 )
             }
 
             Spacer(Modifier.height(24.dp))
 
-            //TOMBOL KELUAR
             Box(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
@@ -171,8 +195,15 @@ fun ProfileScreen(
                     contentPadding = PaddingValues(vertical = 14.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    Icon(
+                        imageVector = Icons.Default.ExitToApp,
+                        contentDescription = null,
+                        tint = ErrorRed,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
                     Text(
-                        "Keluar",
+                        text = "Keluar",
                         color = ErrorRed,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
@@ -219,40 +250,45 @@ private fun ProfileMenuItem(
     subtitle: String,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        onClick = onClick,
+        color = Color.Transparent
     ) {
-        Box(
+        Row(
             modifier = Modifier
-                .size(38.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(iconBg),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, null, tint = iconColor, modifier = Modifier.size(20.dp))
-        }
-        Spacer(Modifier.width(12.dp))
-        Column(Modifier.weight(1f)) {
-            Text(
-                text = title,
-                color = ProfileBlue,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(iconBg),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, null, tint = iconColor, modifier = Modifier.size(20.dp))
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    color = ProfileBlue,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = subtitle,
+                    color = SlateText,
+                    fontSize = 12.sp
+                )
+            }
+            Icon(
+                Icons.Default.ChevronRight,
+                null,
+                tint = SlateText,
+                modifier = Modifier.size(16.dp)
             )
-            Text(
-                text = subtitle,
-                color = SlateText,
-                fontSize = 12.sp
-            )
         }
-        Icon(
-            Icons.Default.ChevronRight,
-            null,
-            tint = SlateText,
-            modifier = Modifier.size(16.dp)
-        )
     }
 }
