@@ -29,7 +29,6 @@ class SearchViewModel : ViewModel() {
     var isSearching = mutableStateOf(false)
         private set
 
-    // Error message
     var errorMessage = mutableStateOf<String?>(null)
         private set
 
@@ -60,32 +59,36 @@ class SearchViewModel : ViewModel() {
             return
         }
 
+        // Debounce: tunggu 600ms lalu search DAN simpan riwayat
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(400)
-            performSearch(query)
+            delay(600)
+            performSearchAndSave(query)
         }
     }
 
+    // Dipanggil saat user tekan tombol search di keyboard
     fun onSearchSubmit() {
         val query = searchQuery.value.trim()
         if (query.isBlank()) return
         searchJob?.cancel()
         viewModelScope.launch {
-            performSearch(query)
-            repository.saveKeyword(query)
-            loadHistory()
+            performSearchAndSave(query)
         }
     }
 
-    private suspend fun performSearch(query: String) {
+    // Search + simpan keyword ke riwayat sekaligus
+    private suspend fun performSearchAndSave(query: String) {
         isLoading.value = true
         isSearching.value = true
         try {
             searchResults.value = repository.searchArticles(query)
+            // Simpan ke riwayat setiap kali search berhasil
+            repository.saveKeyword(query.trim())
+            loadHistory()
         } catch (e: Exception) {
             errorMessage.value = "Gagal mencari artikel. Coba lagi."
-            android.util.Log.e("SEARCH_VM", "performSearch error: ${e.message}")
+            android.util.Log.e("SEARCH_VM", "performSearchAndSave error: ${e.message}")
         } finally {
             isLoading.value = false
         }
@@ -95,10 +98,7 @@ class SearchViewModel : ViewModel() {
         searchQuery.value = keyword
         searchJob?.cancel()
         viewModelScope.launch {
-            performSearch(keyword)
-            // Pindahkan ke atas dengan re-save
-            repository.saveKeyword(keyword)
-            loadHistory()
+            performSearchAndSave(keyword)
         }
     }
 

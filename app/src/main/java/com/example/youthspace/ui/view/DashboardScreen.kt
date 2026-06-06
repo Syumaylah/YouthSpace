@@ -223,33 +223,35 @@ fun DashboardScreen(
                         Spacer(modifier = Modifier.height(24.dp))
 
                         // SEARCH BAR
-                        OutlinedTextField(
-                            value = "",
-                            onValueChange = {},
-                            placeholder = {
-                                Text("Cari artikel...")
-                            },
-
-                            leadingIcon = {
-
-                                Icon(
-                                    imageVector = Icons.Outlined.Search,
-                                    contentDescription = null,
-                                    tint = Color.Gray
-                                )
-                            },
-
-                            modifier = Modifier.fillMaxWidth(),
-
-                            shape = RoundedCornerShape(30.dp),
-
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White,
-                                focusedBorderColor = Color(0xFFE0E0E0),
-                                unfocusedBorderColor = Color(0xFFE0E0E0)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { navController.navigate(Screen.Pencarian.route) }
+                        ) {
+                            OutlinedTextField(
+                                value = "",
+                                onValueChange = {},
+                                placeholder = {
+                                    Text("Cari artikel...")
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Search,
+                                        contentDescription = null,
+                                        tint = Color.Gray
+                                    )
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(30.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = Color.White,
+                                    unfocusedContainerColor = Color.White,
+                                    focusedBorderColor = Color(0xFFE0E0E0),
+                                    unfocusedBorderColor = Color(0xFFE0E0E0)
+                                ),
+                                enabled = false
                             )
-                        )
+                        }
 
                         Spacer(modifier = Modifier.height(28.dp))
 
