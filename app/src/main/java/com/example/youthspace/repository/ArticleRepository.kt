@@ -35,4 +35,17 @@ class ArticleRepository {
             }
             .decodeList<Artikel>()
     }
+    suspend fun getArticleById(artikelId: String): Artikel? {
+        return try {
+            client.postgrest["artikel"]
+                .select(columns = Columns.raw("*, categories!fk_kategori(id, name)")) {
+                    filter { eq("id", artikelId) }
+                }
+                .decodeList<Artikel>()
+                .firstOrNull()
+        } catch (e: Exception) {
+            android.util.Log.e("ARTICLE", "getArticleById error: ${e.message}")
+            null
+        }
+    }
 }

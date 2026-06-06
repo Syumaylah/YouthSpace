@@ -12,6 +12,12 @@ class ArticleViewModel : ViewModel() {
     var articles = mutableStateOf<List<Artikel>>(emptyList())
         private set
 
+    var selectedArtikel = mutableStateOf<Artikel?>(null)
+        private set
+
+    var isLoading = mutableStateOf(false)
+        private set
+
     init {
         loadArticles()
     }
@@ -19,6 +25,14 @@ class ArticleViewModel : ViewModel() {
     private fun loadArticles() {
         viewModelScope.launch {
             articles.value = repository.getArticles()
+        }
+    }
+
+    fun loadArticleById(artikelId: String) {
+        viewModelScope.launch {
+            isLoading.value = true
+            selectedArtikel.value = repository.getArticleById(artikelId)
+            isLoading.value = false
         }
     }
 }
