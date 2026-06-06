@@ -3,19 +3,24 @@ package com.example.youthspace.ui.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.youthspace.viewmodel.CategoryViewModel
 import com.example.youthspace.viewmodel.CreateArticleViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateArticleScreen(
     navController: NavController,
-    viewModel: CreateArticleViewModel = viewModel()
+    viewModel: CreateArticleViewModel = viewModel(),
+    categoryViewModel: CategoryViewModel = viewModel()
 ) {
 
     var title by remember { mutableStateOf("") }
@@ -36,8 +41,19 @@ fun CreateArticleScreen(
     val categories = viewModel.categories.value
     val isLoading = viewModel.isLoading.value
 
-    Scaffold(
+    // State untuk dialog tambah kategori baru
+    val showAddCategoryDialog = categoryViewModel.showDialog.value
+    val categoryInput = categoryViewModel.inputName.value
+    val categoryLoading = categoryViewModel.isLoading.value
 
+    // Refresh daftar kategori di CreateArticleViewModel setelah tambah kategori baru
+    LaunchedEffect(categoryViewModel.message.value) {
+        if (categoryViewModel.message.value?.contains("berhasil") == true) {
+            viewModel.refreshCategories()
+        }
+    }
+
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = {
@@ -45,7 +61,6 @@ fun CreateArticleScreen(
                 }
             )
         }
-
     ) { padding ->
 
         Column(
@@ -69,50 +84,61 @@ fun CreateArticleScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = {
-                    expanded = !expanded
-                }
+            // Row: dropdown kategori + tombol + kategori baru
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-
-                OutlinedTextField(
-                    value = selectedCategoryName,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = {
-                        Text("Kategori")
-                    },
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth()
-                )
-
-                ExposedDropdownMenu(
+                ExposedDropdownMenuBox(
                     expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    }
+                    onExpandedChange = {
+                        expanded = !expanded
+                    },
+                    modifier = Modifier.weight(1f)
                 ) {
+                    OutlinedTextField(
+                        value = selectedCategoryName,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = {
+                            Text("Kategori")
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
+                    )
 
-                    categories.forEach { category ->
-
-                        DropdownMenuItem(
-                            text = {
-                                Text(category.name)
-                            },
-                            onClick = {
-
-                                selectedCategoryName =
-                                    category.name
-
-                                selectedCategoryId =
-                                    category.id
-
-                                expanded = false
-                            }
-                        )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = {
+                            expanded = false
+                        }
+                    ) {
+                        categories.forEach { category ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(category.name)
+                                },
+                                onClick = {
+                                    selectedCategoryName = category.name
+                                    selectedCategoryId = category.id
+                                    expanded = false
+                                }
+                            )
+                        }
                     }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Tombol + untuk tambah kategori baru
+                IconButton(
+                    onClick = { categoryViewModel.openAddDialog() }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Tambah Kategori Baru"
+                    )
                 }
             }
 
@@ -135,11 +161,8 @@ fun CreateArticleScreen(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-
                 enabled = !isLoading,
-
                 onClick = {
-
                     if (
                         title.isBlank() ||
                         content.isBlank() ||
@@ -152,12 +175,10 @@ fun CreateArticleScreen(
                         kategoriId = selectedCategoryId,
                         imageUrl = null
                     ) {
-
                         navController.popBackStack()
                     }
                 }
             ) {
-
                 Text(
                     if (isLoading)
                         "Publishing..."
@@ -168,4 +189,32 @@ fun CreateArticleScreen(
         }
     }
 
+    if (showAddCategoryDialog) {
+        AlertDialog(
+            onDismissRequest = { categoryViewModel.closeDialog() },
+            title = { Text("Tambah Kategori Baru") },
+            text = {
+                OutlinedTextField(
+                    value = categoryInput,
+                    onValueChange = { categoryViewModel.inputName.value = it },
+                    label = { Text("Nama Kategori") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { categoryViewModel.saveCategory() },
+                    enabled = !categoryLoading
+                ) {
+                    Text("Simpan")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { categoryViewModel.closeDialog() }) {
+                    Text("Batal")
+                }
+            }
+        )
+    }
 }

@@ -34,6 +34,10 @@ class DashboardViewModel : ViewModel() {
         loadData()
     }
 
+    fun refresh() {
+        loadData()
+    }
+
     private fun loadData() {
         viewModelScope.launch {
             isLoading.value = true
@@ -87,5 +91,4 @@ class DashboardViewModel : ViewModel() {
             base.take(3)
         }
     }
-
 }

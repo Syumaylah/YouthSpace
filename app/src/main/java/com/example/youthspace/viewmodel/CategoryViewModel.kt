@@ -88,30 +88,9 @@ class CategoryViewModel : ViewModel() {
         }
     }
 
-    fun deleteCategory(id: String) {
-        viewModelScope.launch {
-            isLoading.value = true
-            try {
-                repository.deleteCategory(id)
-                message.value = "Kategori berhasil dihapus"
-                loadCategories()
-            } catch (e: Exception) {
-                message.value = "Gagal menghapus kategori: ${e.message}"
-            } finally {
-                isLoading.value = false
-            }
-        }
-    }
-
     fun openAddDialog() {
         editingCategory.value = null
         inputName.value = ""
-        showDialog.value = true
-    }
-
-    fun openEditDialog(category: Category) {
-        editingCategory.value = category
-        inputName.value = category.name
         showDialog.value = true
     }
 
@@ -119,10 +98,6 @@ class CategoryViewModel : ViewModel() {
         showDialog.value = false
         inputName.value = ""
         editingCategory.value = null
-    }
-
-    fun clearMessage() {
-        message.value = null
     }
 
     fun saveCategory() {

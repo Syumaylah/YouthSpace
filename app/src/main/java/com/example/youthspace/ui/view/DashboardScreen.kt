@@ -29,7 +29,6 @@ import com.example.youthspace.navigation.Screen
 import com.example.youthspace.viewmodel.DashboardViewModel
 import com.example.youthspace.viewmodel.ProfileViewModel
 import java.util.Calendar
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material.icons.filled.Bookmark
 import com.example.youthspace.viewmodel.BookmarkViewModel
 import androidx.compose.foundation.Image
@@ -68,12 +67,11 @@ fun DashboardScreen(
     }
 
     val bookmarkedIds = bookmarkViewModel.bookmarkedIds.value
+
     LaunchedEffect(Unit) {
         profileViewModel.loadUser()
         bookmarkViewModel.loadBookmarks()
-    }
-    LaunchedEffect(Unit) {
-        profileViewModel.loadUser()
+        viewModel.refresh()
     }
 
     Scaffold(
@@ -81,9 +79,7 @@ fun DashboardScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(
-                        Screen.CreateArticle.route
-                    )
+                    navController.navigate(Screen.CreateArticle.route)
                 }
             ) {
                 Text("+")
@@ -91,7 +87,6 @@ fun DashboardScreen(
         },
 
         bottomBar = {
-
             NavigationBar(
                 containerColor = Color.White
             ) {
@@ -99,67 +94,49 @@ fun DashboardScreen(
                 NavigationBarItem(
                     selected = true,
                     onClick = { },
-
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Home,
                             contentDescription = null
                         )
                     },
-
-                    label = {
-                        Text("Beranda")
-                    }
+                    label = { Text("Beranda") }
                 )
 
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(Screen.Pencarian.route) },
-
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Search,
                             contentDescription = null
                         )
                     },
-
-                    label = {
-                        Text("Search")
-                    }
+                    label = { Text("Search") }
                 )
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = {
-                        navController.navigate(
-                            Screen.Bookmark.route
-                        )
-                    },
-
+                    onClick = { navController.navigate(Screen.Bookmark.route) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.BookmarkBorder,
                             contentDescription = null
                         )
                     },
-
-                    label = {
-                        Text("Bookmark")
-                    }
+                    label = { Text("Bookmark") }
                 )
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate(Screen.Profile.route) },
+                    onClick = { navController.navigate(Screen.Profile.route) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Person,
                             contentDescription = null
                         )
                     },
-                    label = {
-                        Text("Profile")
-                    }
+                    label = { Text("Profile") }
                 )
             }
         }
@@ -182,9 +159,7 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
 
                     Surface(
                         modifier = Modifier.size(42.dp),
@@ -203,7 +178,6 @@ fun DashboardScreen(
                 }
 
                 IconButton(onClick = {}) {
-
                     Icon(
                         imageVector = Icons.Outlined.NotificationsNone,
                         contentDescription = null,
@@ -212,15 +186,10 @@ fun DashboardScreen(
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
 
                 item {
-
-                    Column(
-                        modifier = Modifier.padding(horizontal = 20.dp)
-                    ) {
+                    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
 
                         Text(
                             text = greeting,
@@ -247,9 +216,7 @@ fun DashboardScreen(
                             OutlinedTextField(
                                 value = "",
                                 onValueChange = {},
-                                placeholder = {
-                                    Text("Cari artikel...")
-                                },
+                                placeholder = { Text("Cari artikel...") },
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Outlined.Search,
@@ -281,7 +248,6 @@ fun DashboardScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         if (isLoading && categories.isEmpty()) {
-                            // Skeleton loading placeholder
                             Row {
                                 repeat(3) {
                                     Box(
@@ -291,10 +257,7 @@ fun DashboardScreen(
                                             .background(Color(0xFFE9EDF5))
                                             .padding(horizontal = 22.dp, vertical = 12.dp)
                                     ) {
-                                        Text(
-                                            text = "         ",
-                                            fontSize = 14.sp
-                                        )
+                                        Text(text = "         ", fontSize = 14.sp)
                                     }
                                 }
                             }
@@ -309,25 +272,15 @@ fun DashboardScreen(
                                             .padding(end = 12.dp)
                                             .clip(RoundedCornerShape(30.dp))
                                             .background(
-                                                if (selected)
-                                                    Color(0xFF0E4C92)
-                                                else
-                                                    Color(0xFFE9EDF5)
+                                                if (selected) Color(0xFF0E4C92)
+                                                else Color(0xFFE9EDF5)
                                             )
-                                            .clickable {
-                                                viewModel.selectCategory(-1)
-                                            }
-                                            .padding(
-                                                horizontal = 22.dp,
-                                                vertical = 12.dp
-                                            )
+                                            .clickable { viewModel.selectCategory(-1) }
+                                            .padding(horizontal = 22.dp, vertical = 12.dp)
                                     ) {
                                         Text(
                                             text = "Semua",
-                                            color = if (selected)
-                                                Color.White
-                                            else
-                                                Color.Gray,
+                                            color = if (selected) Color.White else Color.Gray,
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.Medium
                                         )
@@ -336,34 +289,21 @@ fun DashboardScreen(
 
                                 // Chip per kategori dari DB
                                 itemsIndexed(categories) { index, category ->
-
                                     val selected = selectedCategoryIndex == index
-
                                     Box(
                                         modifier = Modifier
                                             .padding(end = 12.dp)
                                             .clip(RoundedCornerShape(30.dp))
                                             .background(
-                                                if (selected)
-                                                    Color(0xFF0E4C92)
-                                                else
-                                                    Color(0xFFE9EDF5)
+                                                if (selected) Color(0xFF0E4C92)
+                                                else Color(0xFFE9EDF5)
                                             )
-                                            .clickable {
-                                                viewModel.selectCategory(index)
-                                            }
-                                            .padding(
-                                                horizontal = 22.dp,
-                                                vertical = 12.dp
-                                            )
+                                            .clickable { viewModel.selectCategory(index) }
+                                            .padding(horizontal = 22.dp, vertical = 12.dp)
                                     ) {
-
                                         Text(
                                             text = category.name,
-                                            color = if (selected)
-                                                Color.White
-                                            else
-                                                Color.Gray,
+                                            color = if (selected) Color.White else Color.Gray,
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.Medium
                                         )
@@ -388,39 +328,30 @@ fun DashboardScreen(
                                 .fillMaxWidth()
                                 .height(140.dp)
                                 .clickable {
-
                                     featuredArticle?.let {
                                         navController.navigate(
                                             Screen.DetailArtikel.createRoute(it.id)
                                         )
                                     }
                                 },
-
                             shape = RoundedCornerShape(18.dp),
-
                             colors = CardDefaults.cardColors(
                                 containerColor = Color(0xFF0E4C92)
                             )
                         ) {
-
                             featuredArticle?.let { article ->
-
                                 Column(
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(20.dp),
-
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
-
                                     Text(
                                         text = "ARTIKEL PILIHAN",
                                         color = Color.White.copy(alpha = 0.7f),
                                         fontSize = 12.sp
                                     )
-
                                     Column {
-
                                         Text(
                                             text = article.judul,
                                             color = Color.White,
@@ -428,11 +359,7 @@ fun DashboardScreen(
                                             fontSize = 18.sp,
                                             lineHeight = 22.sp
                                         )
-
-                                        Spacer(
-                                            modifier = Modifier.height(8.dp)
-                                        )
-
+                                        Spacer(modifier = Modifier.height(8.dp))
                                         Text(
                                             text = article.kategori?.name ?: "",
                                             color = Color.White.copy(alpha = 0.8f),
@@ -451,20 +378,16 @@ fun DashboardScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-
                             Text(
                                 text = if (showAll) "Semua Artikel" else "Terbaru",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 22.sp
                             )
-
                             Text(
                                 text = if (showAll) "Sembunyikan" else "Lihat Semua",
                                 color = Color(0xFF1E5AA8),
                                 fontWeight = FontWeight.Medium,
-                                modifier = Modifier.clickable {
-                                    viewModel.toggleShowAll()
-                                }
+                                modifier = Modifier.clickable { viewModel.toggleShowAll() }
                             )
                         }
 
@@ -502,17 +425,11 @@ fun DashboardScreen(
                     items(articles) { article ->
 
                         val imageRes = when (article.kategori?.name?.lowercase()) {
-
                             "psikologi" -> R.drawable.psychology
-
                             "edukasi" -> R.drawable.education
-
                             "pengembangan diri" -> R.drawable.self_development
-
                             "kesehatan" -> R.drawable.health
-
                             "karir" -> R.drawable.career_tips
-
                             else -> R.drawable.psychology
                         }
 
@@ -521,18 +438,12 @@ fun DashboardScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 20.dp, vertical = 8.dp)
                                 .clickable {
-
                                     navController.navigate(
-                                        Screen.DetailArtikel.createRoute(
-                                            article.id
-                                        )
+                                        Screen.DetailArtikel.createRoute(article.id)
                                     )
                                 }
                         ) {
-
-                            Row(
-                                modifier = Modifier.padding(16.dp)
-                            ) {
+                            Row(modifier = Modifier.padding(16.dp)) {
 
                                 Image(
                                     painter = painterResource(id = imageRes),
@@ -545,9 +456,7 @@ fun DashboardScreen(
 
                                 Spacer(modifier = Modifier.width(16.dp))
 
-                                Column(
-                                    modifier = Modifier.weight(1f)
-                                ) {
+                                Column(modifier = Modifier.weight(1f)) {
 
                                     Text(
                                         text = (article.kategori?.name ?: "").uppercase(),

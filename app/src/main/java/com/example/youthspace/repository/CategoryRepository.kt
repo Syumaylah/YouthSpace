@@ -33,13 +33,4 @@ class CategoryRepository {
                 }
             }
     }
-
-    suspend fun deleteCategory(id: String) {
-        client.postgrest["categories"]
-            .delete {
-                filter {
-                    eq("id", id)
-                }
-            }
-    }
 }

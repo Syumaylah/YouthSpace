@@ -27,6 +27,10 @@ class CreateArticleViewModel : ViewModel() {
         }
     }
 
+    fun refreshCategories() {
+        loadCategories()
+    }
+
     fun createArticle(
         judul: String,
         isi: String,
