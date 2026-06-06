@@ -22,6 +22,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.youthspace.viewmodel.ArticleViewModel
 import com.example.youthspace.viewmodel.BookmarkViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.youthspace.R
 
 @Composable
 fun DetailArtikelScreen(
@@ -33,6 +37,20 @@ fun DetailArtikelScreen(
     val bookmarkedIds = bookmarkViewModel.bookmarkedIds.value
     val isBookmarked = bookmarkedIds.contains(artikelId)
     val artikel = articleViewModel.selectedArtikel.value
+    val imageRes = when (artikel?.kategori?.name?.lowercase()) {
+
+        "psikologi" -> R.drawable.psychology
+
+        "edukasi" -> R.drawable.education
+
+        "pengembangan diri" -> R.drawable.self_development
+
+        "kesehatan" -> R.drawable.health
+
+        "karir" -> R.drawable.career_tips
+
+        else -> R.drawable.psychology
+    }
     val isLoading = articleViewModel.isLoading.value
 
     LaunchedEffect(artikelId) {
@@ -48,11 +66,19 @@ fun DetailArtikelScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(240.dp)
-                .background(Color(0xFF0E4C92))
+                .height(220.dp)
         ) {
+
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = artikel?.judul,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+
             IconButton(
-                onClick = { navController.popBackStack() }
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.align(Alignment.TopStart)
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowBack,
@@ -61,19 +87,18 @@ fun DetailArtikelScreen(
                 )
             }
 
-            Text(
-                text = "Gambar Artikel",
-                color = Color.White,
-                modifier = Modifier.align(Alignment.Center)
-            )
-
             IconButton(
-                onClick = { bookmarkViewModel.toggleBookmark(artikelId) },
+                onClick = {
+                    bookmarkViewModel.toggleBookmark(artikelId)
+                },
                 modifier = Modifier.align(Alignment.TopEnd)
             ) {
                 Icon(
-                    imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-                    contentDescription = if (isBookmarked) "Hapus Bookmark" else "Tambah Bookmark",
+                    imageVector = if (isBookmarked)
+                        Icons.Filled.Bookmark
+                    else
+                        Icons.Outlined.BookmarkBorder,
+                    contentDescription = null,
                     tint = Color.White
                 )
             }

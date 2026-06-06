@@ -32,6 +32,10 @@ import java.util.Calendar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material.icons.filled.Bookmark
 import com.example.youthspace.viewmodel.BookmarkViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import com.example.youthspace.R
 
 @Composable
 fun DashboardScreen(
@@ -370,7 +374,7 @@ fun DashboardScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(170.dp)
+                                .height(140.dp)
                                 .clickable {
 
                                     featuredArticle?.let {
@@ -409,8 +413,8 @@ fun DashboardScreen(
                                             text = article.judul,
                                             color = Color.White,
                                             fontWeight = FontWeight.Bold,
-                                            fontSize = 22.sp,
-                                            lineHeight = 28.sp
+                                            fontSize = 18.sp,
+                                            lineHeight = 22.sp
                                         )
 
                                         Spacer(
@@ -425,19 +429,9 @@ fun DashboardScreen(
                                     }
                                 }
                             }
-
-                            // Jika belum ada artikel, tampilkan placeholder
-                            if (featuredArticle == null && isLoading) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator(color = Color.White)
-                                }
-                            }
                         }
 
-                        Spacer(modifier = Modifier.height(28.dp))
+                        Spacer(modifier = Modifier.height(24.dp))
 
                         // HEADER TERBARU / LIHAT SEMUA
                         Row(
@@ -495,6 +489,21 @@ fun DashboardScreen(
                 } else {
                     items(articles) { article ->
 
+                        val imageRes = when (article.kategori?.name?.lowercase()) {
+
+                            "psikologi" -> R.drawable.psychology
+
+                            "edukasi" -> R.drawable.education
+
+                            "pengembangan diri" -> R.drawable.self_development
+
+                            "kesehatan" -> R.drawable.health
+
+                            "karir" -> R.drawable.career_tips
+
+                            else -> R.drawable.psychology
+                        }
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -513,21 +522,14 @@ fun DashboardScreen(
                                 modifier = Modifier.padding(16.dp)
                             ) {
 
-                                // ICON BOX (placeholder jika image_url null)
-                                Box(
+                                Image(
+                                    painter = painterResource(id = imageRes),
+                                    contentDescription = article.judul,
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(70.dp)
                                         .clip(RoundedCornerShape(14.dp))
-                                        .background(Color(0xFFE8EDFF)),
-                                    contentAlignment = Alignment.Center
-                                ) {
-
-                                    Text(
-                                        text = "✦",
-                                        fontSize = 26.sp,
-                                        color = Color(0xFF1E5AA8)
-                                    )
-                                }
+                                )
 
                                 Spacer(modifier = Modifier.width(16.dp))
 
