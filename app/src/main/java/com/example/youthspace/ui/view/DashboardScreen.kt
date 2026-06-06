@@ -78,6 +78,18 @@ fun DashboardScreen(
 
     Scaffold(
 
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(
+                        Screen.CreateArticle.route
+                    )
+                }
+            ) {
+                Text("+")
+            }
+        },
+
         bottomBar = {
 
             NavigationBar(

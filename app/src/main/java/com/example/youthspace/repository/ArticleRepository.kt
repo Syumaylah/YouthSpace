@@ -48,4 +48,19 @@ class ArticleRepository {
             null
         }
     }
+    suspend fun createArticle(
+        judul: String,
+        isi: String,
+        kategoriId: String,
+        imageUrl: String? = null
+    ) {
+        client.postgrest["artikel"].insert(
+            mapOf(
+                "judul" to judul,
+                "isi" to isi,
+                "kategori_id" to kategoriId,
+                "image_url" to imageUrl
+            )
+        )
+    }
 }

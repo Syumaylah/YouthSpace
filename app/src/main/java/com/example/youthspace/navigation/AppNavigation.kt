@@ -22,6 +22,7 @@ import com.example.youthspace.ui.view.RegisterScreen
 import com.example.youthspace.ui.view.SearchScreen
 import com.example.youthspace.ui.view.DetailArtikelScreen
 import com.example.youthspace.ui.view.BookmarkScreen
+import com.example.youthspace.ui.view.CreateArticleScreen
 
 @Composable
 fun AppNavigation(
@@ -130,6 +131,12 @@ fun MainNavHost(
 
         composable(Screen.Dashboard.route) {
             DashboardScreen(navController = navController)
+        }
+
+        composable(Screen.CreateArticle.route) {
+            CreateArticleScreen(
+                navController = navController
+            )
         }
 
         composable(
