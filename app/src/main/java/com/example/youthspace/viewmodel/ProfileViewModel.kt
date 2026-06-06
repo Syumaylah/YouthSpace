@@ -68,7 +68,6 @@ class ProfileViewModel : ViewModel() {
             try {
                 val url = repository.uploadProfilePhoto(context, imageUri)
                 if (url != null) {
-                    // Refresh data user supaya foto baru langsung tampil
                     _currentUser.value = repository.getCurrentUser()
                     _updateState.value = ProfileUpdateState.Success
                 } else {
